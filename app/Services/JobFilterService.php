@@ -23,7 +23,7 @@ class JobFilterService
             $this->applyCondition($filter);
         }
 
-        return $this->query->get();
+        return $this->query->paginate(20);
     }
 
     protected function applyCondition($condition)

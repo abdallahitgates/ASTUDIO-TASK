@@ -7,59 +7,169 @@
 <a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
 </p>
 
-## About Laravel
+## Project Setup
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+Requirements:
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+PHP 8.x
+Laravel 10.x
+MySQL or PostgreSQL
+Composer
+Node.js & NPM (for frontend dependencies, if applicable)
+Postman (for testing API requests)
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+## Installation Steps
 
-## Learning Laravel
+Clone the Repository:
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+git clone https://github.com/abdallahitgates/ASTUDIO-TASK.git
+cd job-board
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+Install Dependencies:
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 2000 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+composer install
+npm install
 
-## Laravel Sponsors
+Configure Environment:
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell).
+Copy the .env.example file and rename it to .env
 
-### Premium Partners
+cp .env.example .env
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Cubet Techno Labs](https://cubettech.com)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[Many](https://www.many.co.uk)**
-- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
-- **[DevSquad](https://devsquad.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[OP.GG](https://op.gg)**
-- **[WebReinvent](https://webreinvent.com/?utm_source=laravel&utm_medium=github&utm_campaign=patreon-sponsors)**
-- **[Lendio](https://lendio.com)**
+Update database credentials in .env :
 
-## Contributing
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=your_database
+DB_USERNAME=your_username
+DB_PASSWORD=your_password
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+Generate Application Key:
 
-## Code of Conduct
+php artisan key:generate
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+Run Migrations & Seeders:
 
-## Security Vulnerabilities
+php artisan migrate --seed
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+Start the Application:
+
+php artisan serve
+
+## API Documentation
+
+Base URL:
+
+http://127.0.0.1:8000/api
+
+Filtering Syntax
+
+Filters can be applied using query parameters. Example:
+
+GET /api/jobs?filter=salary_min>=50000 AND is_remote=true AND job_type IN(Full-time,Contract)
+
+Supported Filter Operations:
+
+1- Text Fields (title, description, company_name)
+
+Equality: = , !=
+
+Contains: ~ (LIKE)
+
+Example:
+
+GET /api/jobs?filter=title~"Developer"
+
+2- Number Fields (salary_min, salary_max)
+
+Equality: =, !=
+
+Comparison: >, <, >=, <=
+
+Example:
+
+GET /api/jobs?filter=salary_min>=60000
+
+3- Boolean Fields (is_remote)
+
+Equality: =, !=
+
+Example:
+
+GET /api/jobs?filter=is_remote=true
+
+Select Fields (job_type, status)
+
+Equality: =, !=
+
+4- Multiple values: IN(value1,value2,...)
+
+Example:
+
+GET /api/jobs?filter=job_type IN(Freelance,Part-time)
+
+5- Date Fields (published_at, created_at)
+
+Equality: =, !=
+
+Comparison: >, <, >=, <=
+
+Example:
+
+GET /api/jobs?filter=published_at>=2024-01-01
+
+6- Relational Fields (languages, locations, categories)
+
+Equality: =
+
+Exists: EXISTS
+
+Example:
+
+GET /api/jobs?filter=languages="English"
+
+7- Custom Attributes (attribute:name)
+
+Equality: =, !=
+
+Comparison: >, <, >=, <=
+
+Contains: LIKE
+
+8- Multiple values: IN(value1,value2,...)
+
+Example:
+
+GET /api/jobs?filter=attribute:experience>=3
+
+## Testing with Postman
+
+1- Import Postman Collection
+
+2- Open Postman
+
+4- Click Import
+
+5-Select the collection from docs/Job-Board.postman_collection.json
+
+Use Predefined Requests
+
+ * Select the appropriate request (e.g., GET /api/jobs)
+
+Modify query parameters as needed
+
+Click Send
+
+## Notes on Design Decisions
+
+Query Optimization: The service avoids N+1 queries by using with() for relationships.
+
+Extensibility: Filters are modular, making it easy to add new conditions.
+
+Validation & Error Handling: Invalid filters return JSON errors with meaningful messages.
+
+Pagination: The API returns paginated results (20 per page).
 
 ## License
 
